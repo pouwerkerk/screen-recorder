@@ -1,5 +1,6 @@
 #include "ScreenRecorderWrapper.h"
 #import "ScreenRecorder.h"
+#import <AppKit/AppKit.h>
 
 struct Impl {
   ScreenRecorder *recorder;
@@ -103,8 +104,10 @@ void ScreenRecorderWrapper::SetCropRect(const Nan::FunctionCallbackInfo<v8::Valu
   double width = info[2]->NumberValue();
   double height = info[3]->NumberValue();
 
+  NSRect frame = NSScreen.mainScreen.frame;
+    
   ScreenRecorderWrapper *obj = ObjectWrap::Unwrap<ScreenRecorderWrapper>(info.Holder());
-  [((Impl*)obj->pImpl_)->recorder setCropRect:CGRectMake(x, y, width, height)];
+  [((Impl*)obj->pImpl_)->recorder setCropRect:CGRectMake(x, frame.size.height - (y + height), width, height)];
 }
 
 void ScreenRecorderWrapper::SetFrameRate(const Nan::FunctionCallbackInfo<v8::Value>& info) {
